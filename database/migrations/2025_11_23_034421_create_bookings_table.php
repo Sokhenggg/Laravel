@@ -13,7 +13,17 @@ return new class extends Migration
     {
         Schema::create('bookings', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->string('name');
+            $table->string('email');
+            $table->integer('num_people');
+            $table->dateTime('date');
+            $table->text('request')->nullable();
+            $table->string('status')->default('pending');
             $table->timestamps();
+            
+            // Foreign key constraint
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
