@@ -15,11 +15,16 @@ class FoodsController extends Controller
 {
     public function foodDetails($id)
     {
-        // Get the first available food item or create a sample one
+        // Get the food item
         $foodItem = Food::find($id);
+        
+        // Check if food item exists
+        if (!$foodItem) {
+            return redirect()->route('home')->with('error', 'Food item not found.');
+        }
+        
         if(Auth::check()){
-        // User is authenticated
-
+            // User is authenticated
             //verify if user added item to cart
             $cartVerifying = Cart::where('food_id', $id)->
             where('user_id', Auth::user()->id)->count();
@@ -157,6 +162,11 @@ class FoodsController extends Controller
 
     public function bookingTables(Request $request)
     {
+        // Check if user is authenticated
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'Please login to make a booking.');
+        }
+
         // Check if any required field is empty
         if (empty($request->name) || empty($request->email) || empty($request->num_people) || empty($request->date)) {
             return redirect()->route('home')->with('error', 'Some inputs are empty. Please fill in all required fields.');
